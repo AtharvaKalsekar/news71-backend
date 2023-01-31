@@ -1,0 +1,25 @@
+{
+  "name": "news71-be",
+  "version": "1.0.0",
+  "description": "Backend app for news71",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AtharvaKalsekar/news71-backend.git"
+  },
+  "author": "Atharva Kalsekar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AtharvaKalsekar/news71-backend/issues"
+  },
+  "homepage": "https://github.com/AtharvaKalsekar/news71-backend#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
