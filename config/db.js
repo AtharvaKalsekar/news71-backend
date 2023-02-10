@@ -1,4 +1,7 @@
+import colors from 'colors';
 import mongoose from 'mongoose';
+
+const _ = colors;
 
 const connectDB = async () => {
   try {
