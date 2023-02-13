@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 
 import connectDB from './config/db.js';
+import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 import ArticleRouter from './routes/article.js';
 
 dotenv.config();
@@ -16,6 +17,9 @@ app.get("/", (req, res, next) => {
 });
 
 app.use("/articles", ArticleRouter);
+
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
   console.log(`listening on port ${process.env.PORT}`.green.inverse);
