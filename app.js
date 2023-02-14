@@ -2,8 +2,9 @@ import dotenv from 'dotenv';
 import express from 'express';
 
 import connectDB from './config/db.js';
-import { errorHandler, notFound } from './middleware/errorMiddleware.js';
+import { errorHandler } from './middleware/errorMiddleware.js';
 import ArticleRouter from './routes/article.js';
+import UserRouter from './routes/user.js';
 
 dotenv.config();
 connectDB();
@@ -17,8 +18,8 @@ app.get("/", (req, res, next) => {
 });
 
 app.use("/articles", ArticleRouter);
+app.use("/auth", UserRouter);
 
-app.use(notFound);
 app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
