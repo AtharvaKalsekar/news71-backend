@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/user.js';
+import { sendOtp } from './utils.js';
 
 /**
  *
@@ -53,18 +54,83 @@ export const register = asyncHandler(async (req, res, next) => {
     throw new Error("Email already registered");
   }
 
+  const otp = Math.floor(Math.random() * 1000000);
+  await sendOtp(otp, email);
+  const otpGeneratedAt = new Date();
+
   const user = await User.create({
     email,
     password,
     name,
+    verificationOtp: otp,
+    otpGeneratedAt,
   });
 
   res.status(200).json({
     id: user._id,
-    email: user.email,
     name: user.name,
+    email: user.email,
     token: jwt.sign({ id: user._id }, process.env.JWT_SECRET ?? "", {
       expiresIn: "30d",
     }),
   });
 });
+
+export const verifyOtp = asyncHandler(
+  /**
+   * @type {Controller<{user?:TMongooseModel<TUserModel>}>}
+   */
+  async (req, res, next) => {
+    /**
+     * @type { TMongooseModel<TUserModel> | undefined }
+     */
+    const user = req.user;
+    const otp = Number(req.body.otp);
+
+    const otpGeneratedAt = user?.otpGeneratedAt?.getTime() ?? 0;
+    const currentDate = new Date().getTime();
+    const diff = currentDate - otpGeneratedAt;
+
+    const isOtpExpired =
+      Math.round(diff / 1000 / 60) >
+      (Number(process.env.OTP_VALIDITY_DURATION_IN_MINUTES) ?? 30);
+
+    if (isOtpExpired) {
+      throw new Error("Otp Expired");
+    }
+
+    if (user?.verificationOtp !== otp) {
+      throw new Error("Otp Incorrect");
+    }
+
+    await user?.update({
+      isEmailVerified: true,
+    });
+
+    res.status(200).json({ message: "Email verified successfully" });
+  }
+);
+
+export const resendOtp = asyncHandler(
+  /**
+   * @type {Controller<{user?:TMongooseModel<TUserModel>}>}
+   */
+  async (req, res, next) => {
+    /**
+     * @type { TMongooseModel<TUserModel> | undefined }
+     */
+    const user = req.user;
+    const email = user?.email;
+
+    const otp = Math.floor(Math.random() * 1000000);
+    await sendOtp(otp, email);
+    const otpGeneratedAt = new Date();
+
+    await user?.update({
+      verificationOtp: otp,
+      otpGeneratedAt,
+    });
+
+    res.status(200).json({ message: "OTP sent to registered Email ID" });
+  }
+);
