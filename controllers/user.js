@@ -18,10 +18,12 @@ export const login = asyncHandler(async (req, res, next) => {
   });
 
   if (!user) {
+    res.statusCode = 401;
     throw new Error("User not registered");
   }
 
   if (user.password !== password) {
+    res.statusCode = 401;
     throw new Error("Email id or password incorrect");
   }
 
@@ -45,12 +47,14 @@ export const register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
+    res.statusCode = 401;
     throw new Error("Insufficient credentials");
   }
 
   const userExists = await User.exists({ email });
 
   if (userExists) {
+    res.statusCode = 409;
     throw new Error("Email already registered");
   }
 
@@ -96,10 +100,12 @@ export const verifyOtp = asyncHandler(
       (Number(process.env.OTP_VALIDITY_DURATION_IN_MINUTES) ?? 30);
 
     if (isOtpExpired) {
+      res.statusCode = 410;
       throw new Error("Otp Expired");
     }
 
     if (user?.verificationOtp !== otp) {
+      res.statusCode = 401;
       throw new Error("Otp Incorrect");
     }
 
