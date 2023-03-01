@@ -34,6 +34,7 @@ export const login = asyncHandler(async (req, res, next) => {
     token: jwt.sign({ id: user._id }, process.env.JWT_SECRET ?? "", {
       expiresIn: "30d",
     }),
+    isEmailVerfied: user.isEmailVerified,
   });
 });
 
@@ -68,6 +69,7 @@ export const register = asyncHandler(async (req, res, next) => {
     name,
     verificationOtp: otp,
     otpGeneratedAt,
+    isEmailVerified: false,
   });
 
   res.status(200).json({
@@ -77,6 +79,7 @@ export const register = asyncHandler(async (req, res, next) => {
     token: jwt.sign({ id: user._id }, process.env.JWT_SECRET ?? "", {
       expiresIn: "30d",
     }),
+    isEmailVerfied: user.isEmailVerified,
   });
 });
 
