@@ -9,6 +9,7 @@ export const protect = asyncHandler(
    */
   async (req, res, next) => {
     if (!req.headers.authorization) {
+      res.statusCode = 401;
       throw new Error("Not authorized, token failed");
     }
     const token = req.headers.authorization;
@@ -16,6 +17,7 @@ export const protect = asyncHandler(
     const decoded = jwt.verify(token, process.env.JWT_SECRET ?? "");
     const user = await User.findById(decoded.id);
     if (!user) {
+      res.statusCode = 401;
       throw new Error("User not found");
     }
     req.user = user;

@@ -1,8 +1,8 @@
-import asyncHandler from 'express-async-handler';
-import jwt from 'jsonwebtoken';
+import asyncHandler from "express-async-handler";
+import jwt from "jsonwebtoken";
 
-import User from '../models/user.js';
-import { sendOtp } from './utils.js';
+import User from "../models/user.js";
+import { sendOtp } from "./utils.js";
 
 /**
  *
@@ -34,7 +34,7 @@ export const login = asyncHandler(async (req, res, next) => {
     token: jwt.sign({ id: user._id }, process.env.JWT_SECRET ?? "", {
       expiresIn: "30d",
     }),
-    isEmailVerfied: user.isEmailVerified,
+    isEmailVerified: user.isEmailVerified,
   });
 });
 
