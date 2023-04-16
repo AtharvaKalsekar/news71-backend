@@ -116,7 +116,9 @@ export const verifyOtp = asyncHandler(
       isEmailVerified: true,
     });
 
-    res.status(200).json({ message: "Email verified successfully" });
+    res
+      .status(200)
+      .json({ message: "Email verified successfully", isEmailVerified: true });
   }
 );
 
@@ -141,5 +143,58 @@ export const resendOtp = asyncHandler(
     });
 
     res.status(200).json({ message: "OTP sent to registered Email ID" });
+  }
+);
+
+export const checkEmailExists = asyncHandler(async (req, res) => {
+  const email = req.body.email;
+
+  const userExists = await User.exists({ email });
+  if (userExists) {
+    const otp = Math.floor(Math.random() * 1000000);
+    await sendOtp(otp, email);
+    const otpGeneratedAt = new Date();
+
+    const user = await User.findOne({ email });
+    await user?.update({
+      verificationOtp: otp,
+      otpGeneratedAt,
+      isEmailVerified: false,
+    });
+    res.status(200).json({
+      message: "OTP sent to registered Email ID",
+      email: user?.email,
+      isEmailVerified: false,
+      token: jwt.sign({ id: user?._id }, process.env.JWT_SECRET ?? "", {
+        expiresIn: "30d",
+      }),
+    });
+  } else {
+    res.statusCode = 401;
+    throw new Error("User not found");
+  }
+});
+
+export const setNewPassword = asyncHandler(
+  /**
+   * @type {Controller<{user?:TMongooseModel<TUserModel>}>}
+   */
+  async (req, res, next) => {
+    /**
+     * @type { TMongooseModel<TUserModel> | undefined }
+     */
+    const user = req.user;
+    const password = req.body.password;
+
+    if (user && !user.isEmailVerified) {
+      res.statusCode = 401;
+      throw new Error("User unauthorized");
+    }
+
+    await user?.update({
+      password,
+    });
+
+    res.status(200).json({ message: "Password updated successfully" });
   }
 );
