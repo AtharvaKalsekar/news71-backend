@@ -1,8 +1,8 @@
-import asyncHandler from "express-async-handler";
-import jwt from "jsonwebtoken";
+import asyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
 
-import User from "../models/user.js";
-import { sendOtp } from "./utils.js";
+import User from '../models/user.js';
+import { sendOtp } from './utils.js';
 
 /**
  *
@@ -149,29 +149,34 @@ export const resendOtp = asyncHandler(
 export const checkEmailExists = asyncHandler(async (req, res) => {
   const email = req.body.email;
 
-  const userExists = await User.exists({ email });
-  if (userExists) {
-    const otp = Math.floor(Math.random() * 1000000);
-    await sendOtp(otp, email);
-    const otpGeneratedAt = new Date();
+  try {
+    const userExists = await User.exists({ email });
+    if (userExists) {
+      const otp = Math.floor(Math.random() * 1000000);
+      await sendOtp(otp, email);
+      const otpGeneratedAt = new Date();
 
-    const user = await User.findOne({ email });
-    await user?.update({
-      verificationOtp: otp,
-      otpGeneratedAt,
-      isEmailVerified: false,
-    });
-    res.status(200).json({
-      message: "OTP sent to registered Email ID",
-      email: user?.email,
-      isEmailVerified: false,
-      token: jwt.sign({ id: user?._id }, process.env.JWT_SECRET ?? "", {
-        expiresIn: "30d",
-      }),
-    });
-  } else {
-    res.statusCode = 401;
-    throw new Error("User not found");
+      const user = await User.findOne({ email });
+      await user?.update({
+        verificationOtp: otp,
+        otpGeneratedAt,
+        isEmailVerified: false,
+      });
+      res.status(200).json({
+        message: "OTP sent to registered Email ID",
+        email: user?.email,
+        isEmailVerified: false,
+        token: jwt.sign({ id: user?._id }, process.env.JWT_SECRET ?? "", {
+          expiresIn: "30d",
+        }),
+      });
+    } else {
+      res.statusCode = 401;
+      throw new Error("User not found");
+    }
+  } catch (e) {
+    res.statusCode = 500;
+    throw new Error("Error while sending OTP");
   }
 });
 
