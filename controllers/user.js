@@ -203,3 +203,22 @@ export const setNewPassword = asyncHandler(
     res.status(200).json({ message: "Password updated successfully" });
   }
 );
+
+export const deleteAccount = asyncHandler(
+  /**
+   * @type {Controller<{user?:TMongooseModel<TUserModel>}>}
+   */
+  async (req, res) => {
+    /**
+     * @type { TMongooseModel<TUserModel> | undefined }
+     */
+    const user = req.user;
+    try {
+      await user?.delete();
+      res.status(200).json({ message: "User deleted successfully" });
+    } catch (e) {
+      res.statusCode = 500;
+      throw Error("Unable to delete user");
+    }
+  }
+);
