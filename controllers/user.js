@@ -165,6 +165,7 @@ export const checkEmailExists = asyncHandler(async (req, res) => {
       res.status(200).json({
         message: "OTP sent to registered Email ID",
         email: user?.email,
+        name: user?.name,
         isEmailVerified: false,
         token: jwt.sign({ id: user?._id }, process.env.JWT_SECRET ?? "", {
           expiresIn: "30d",
