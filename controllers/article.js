@@ -17,7 +17,9 @@ export const getArticles = asyncHandler(async (req, res, next) => {
   const articlesPerSection = Number(req.query.articlesPerSection) ?? 10;
   const articles = await Article.find({
     section,
-  }).limit(articlesPerSection);
+  })
+    .sort({ created_date: -1 })
+    .limit(articlesPerSection);
   res.status(200).json(articles);
 });
 
