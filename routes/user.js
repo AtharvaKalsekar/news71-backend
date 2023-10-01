@@ -19,6 +19,9 @@ router.route("/verifyOtp").post(protect, verifyOtp);
 router.route("/resendOtp").post(protect, resendOtp);
 router.route("/checkEmailExists").post(checkEmailExists);
 router.route("/setNewPassword").post(protect, setNewPassword);
-router.route("/deleteAccount").delete(protect, deleteAccount);
+router
+  .route("/deleteAccount")
+  .delete(protect, deleteAccount)
+  .get(protect, deleteAccount);
 
 export default router;
