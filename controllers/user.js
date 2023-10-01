@@ -85,11 +85,11 @@ export const register = asyncHandler(async (req, res, next) => {
 
 export const verifyOtp = asyncHandler(
   /**
-   * @type {Controller<{user?:TMongooseModel<TUserModel>}>}
+   * @type {import('../types.js').Controller<{user?:import('../types.js').TMongooseModel<import('../types.js').TUserModel>}>}
    */
   async (req, res, next) => {
     /**
-     * @type { TMongooseModel<TUserModel> | undefined }
+     * @type { import('../types.js').TMongooseModel<import('../types.js').TUserModel> | undefined }
      */
     const user = req.user;
     const otp = Number(req.body.otp);
@@ -124,11 +124,11 @@ export const verifyOtp = asyncHandler(
 
 export const resendOtp = asyncHandler(
   /**
-   * @type {Controller<{user?:TMongooseModel<TUserModel>}>}
+   * @type {import('../types.js').Controller<{user?:import('../types.js').TMongooseModel<import('../types.js').TUserModel>}>}
    */
   async (req, res, next) => {
     /**
-     * @type { TMongooseModel<TUserModel> | undefined }
+     * @type { import('../types.js').TMongooseModel<import('../types.js').TUserModel> | undefined }
      */
     const user = req.user;
     const email = user?.email;
@@ -183,11 +183,11 @@ export const checkEmailExists = asyncHandler(async (req, res) => {
 
 export const setNewPassword = asyncHandler(
   /**
-   * @type {Controller<{user?:TMongooseModel<TUserModel>}>}
+   * @type {import('../types.js').Controller<{user?:import('../types.js').TMongooseModel<import('../types.js').TUserModel>}>}
    */
   async (req, res, next) => {
     /**
-     * @type { TMongooseModel<TUserModel> | undefined }
+     * @type { import('../types.js').TMongooseModel<import('../types.js').TUserModel> | undefined }
      */
     const user = req.user;
     const password = req.body.password;
@@ -207,11 +207,11 @@ export const setNewPassword = asyncHandler(
 
 export const deleteAccount = asyncHandler(
   /**
-   * @type {Controller<{user?:TMongooseModel<TUserModel>}>}
+   * @type {import('../types.js').Controller<{user?:import('../types.js').TMongooseModel<import('../types.js').TUserModel>}>}
    */
   async (req, res) => {
     /**
-     * @type { TMongooseModel<TUserModel> | undefined }
+     * @type { import('../types.js').TMongooseModel<import('../types.js').TUserModel> | undefined }
      */
     const user = req.user;
     try {

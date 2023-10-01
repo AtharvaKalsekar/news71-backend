@@ -26,3 +26,5 @@
  *   next:TNextFunction
  *  ) => any } Controller<T>
  */
+
+export default {};
